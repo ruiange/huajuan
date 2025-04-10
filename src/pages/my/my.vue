@@ -7,7 +7,7 @@
         </view>
         <view class="user-info-details">
           <view class="user-name">喜羊羊</view>
-          <view class="desc">一星会员</view>
+          <view class="desc">来到花卷萌的第 100 天</view>
         </view>
       </view>
 
