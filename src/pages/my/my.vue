@@ -11,38 +11,61 @@
         </view>
       </view>
 
-      <view class="edit-btn">编辑资料</view>
+      <view class="edit-btn" @click="editInfo">编辑资料</view>
     </view>
 
     <div class="occupation"></div>
     <view class="jiuyin-box">
-      <view class="box box1">
+      <view class="box box1" @click="myGameAccount">
         <view class="box-left">
           <image class="box-icon" src="https://s1.locimg.com/2025/04/10/bb047117570a3.png"></image>
           <view>我的九阴</view>
         </view>
-        <image src="https://s1.locimg.com/2025/04/10/57b6c2c68f18d.png" style="width: 30rpx;" mode="widthFix"></image>
+        <image
+          src="https://s1.locimg.com/2025/04/10/57b6c2c68f18d.png"
+          style="width: 30rpx"
+          mode="widthFix"
+        ></image>
       </view>
-      <view class="box box2">我的地址</view>
+      <view class="box box2" @click="myAddress">我的地址</view>
     </view>
   </view>
-
 </template>
 
 <script setup lang="ts">
+  const myGameAccount = () => {
+    console.log('=======')
+    uni.navigateTo({
+      url: '/pages/my/game/game',
+    });
+  };
+  const myAddress = () => {
+    uni.showToast({
+      title: '开发中',
+      icon: 'none',
+    });
+  };
+
+  const editInfo = () => {
+    uni.showToast({
+      title: '开发中',
+      icon: 'none',
+    });
+  };
 </script>
 
 <style scoped lang="less">
   .my-top {
     background: linear-gradient(to right, #d8d9ff, #e0e0fb, #f5ebf2, #fdeeec, #fdeeec);
     width: 100%;
-    height: 600rpx;
+    height: 700rpx;
     position: relative;
 
     .occupation {
+      border: 1px solid red;
       position: absolute;
       width: 100%;
-      height: 300rpx;
+      height: 200rpx;
       left: 0;
       bottom: -10rpx;
       background: linear-gradient(to bottom, rgba(247, 248, 250, 0), rgba(247, 248, 250, 1));
@@ -106,21 +129,19 @@
     }
   }
 
-
-  .jiuyin-box{
+  .jiuyin-box {
     width: 100%;
     display: flex;
     align-items: center;
     justify-content: space-between;
     padding: 30rpx;
-    .box{
+    .box {
       width: 325rpx;
       height: 120rpx;
       border-radius: 20rpx;
       background-color: #fff;
-
     }
-    .box1{
+    .box1 {
       font-size: 34rpx;
       font-weight: 800;
       color: #000;
@@ -128,18 +149,20 @@
       align-items: center;
       justify-content: space-between;
       padding: 0 20rpx;
-      background: linear-gradient(rgba(255, 255, 255, 0.6), rgba(255, 255, 255, 0.6)), url('https://9yin.woniu.com/static/act/202412/3/images/bg.jpg') center/cover no-repeat;
+      background:
+        linear-gradient(rgba(255, 255, 255, 0.6), rgba(255, 255, 255, 0.6)),
+        url('https://9yin.woniu.com/static/act/202412/3/images/bg.jpg') center/cover no-repeat;
       .box-icon {
         width: 30rpx;
         height: 30rpx;
         margin-right: 8rpx;
       }
-      .box-left{
+      .box-left {
         display: flex;
         align-items: center;
       }
     }
-    .box2{
+    .box2 {
       display: flex;
       align-items: center;
       justify-content: center;
@@ -147,9 +170,9 @@
       font-weight: 800;
       color: #000;
 
-      background: linear-gradient(rgba(255, 255, 255, 0.6), rgba(255, 255, 255, 0.6)), url('https://s1.locimg.com/2025/04/10/c15d3545441ca.jpg') center/cover no-repeat;
-
+      background:
+        linear-gradient(rgba(255, 255, 255, 0.6), rgba(255, 255, 255, 0.6)),
+        url('https://s1.locimg.com/2025/04/10/c15d3545441ca.jpg') center/cover no-repeat;
     }
-
   }
 </style>
