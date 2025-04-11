@@ -24,7 +24,9 @@
 
 <script setup>
   import { ref } from 'vue';
-  import { onShow } from '@dcloudio/uni-app';
+  import { onLoad, onShow } from '@dcloudio/uni-app';
+  import * as AuthStore from 'node/os';
+  import { useAuthStore } from '../../store/auth';
   const UserInfo = ref({
     name: '',
   });
@@ -42,9 +44,15 @@
   };
   const nicknamereview = (res) => {
     console.log(res);
-    console.log(res.detail)
-    console.log(UserInfo.value)
-  }
+    console.log(res.detail);
+    console.log(UserInfo.value);
+  };
+  const userIfo = ref({});
+  const AuthStore = useAuthStore();
+  onLoad(() => {
+    userIfo.value = AuthStore.userInfo;
+    console.log(userIfo.value);
+  });
 </script>
 
 <style scoped lang="less">

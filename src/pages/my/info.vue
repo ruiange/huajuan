@@ -1,7 +1,7 @@
 <template>
   <view class="list">
     <view class="list-item">
-      <image class="avatar" src="https://s1.locimg.com/2025/04/04/f62de45385cd1.gif"></image>
+      <image class="avatar" :src="userIfo?.avatar"></image>
       <view class="btn">
         <button class="avatar-wrapper" open-type="chooseAvatar" @chooseavatar="onChooseAvatar">
           更换头像
@@ -17,7 +17,7 @@
     <view class="list-item list-item-info" @click="editName">
       <view class="item-info">
         <view class="label">昵称</view>
-        <view class="value">xxxxxxxxxxxxx</view>
+        <view class="value">{{ userIfo?.name }}</view>
       </view>
       <image
         src="https://s1.locimg.com/2025/04/10/57b6c2c68f18d.png"
@@ -31,13 +31,26 @@
 <script setup>
   import { useAuthStore } from '../../store/auth';
   import { onLoad } from '@dcloudio/uni-app';
+  import { ref } from 'vue';
+  import { updateUserInfoAPI } from '../../api/user';
 
   const onChooseAvatar = async (res) => {
     await uni.showLoading({
       title: '上传中',
     });
-    console.log(res);
+    console.log(res.detail.avatarUrl);
+    userIfo.value.avatar = res.detail.avatarUrl;
+    const params = {
+      avatar: res.detail.avatarUrl,
+    };
+    const { data } = await updateUserInfoAPI(params);
+    console.log(data);
+
     uni.hideLoading();
+    await uni.showToast({
+      title: '头像修改成功',
+      icon: 'none',
+    });
   };
   const editName = () => {
     uni.navigateTo({
@@ -48,6 +61,7 @@
   const AuthStore = useAuthStore();
   onLoad(() => {
     userIfo.value = AuthStore.userInfo;
+    console.log(userIfo.value);
   });
 </script>
 
