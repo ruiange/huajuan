@@ -8,7 +8,7 @@
         </button>
         <image
           src="https://s1.locimg.com/2025/04/10/57b6c2c68f18d.png"
-          style="width: 24rpx;height: 24rpx; margin-left: 3rpx"
+          style="width: 24rpx; height: 24rpx; margin-left: 3rpx"
           mode="widthFix"
         ></image>
       </view>
@@ -21,15 +21,17 @@
       </view>
       <image
         src="https://s1.locimg.com/2025/04/10/57b6c2c68f18d.png"
-        style="width: 24rpx;height: 24rpx; margin-left: 3rpx"
+        style="width: 24rpx; height: 24rpx; margin-left: 3rpx"
         mode="widthFix"
       ></image>
     </view>
-
   </view>
 </template>
 
 <script setup>
+  import { useAuthStore } from '../../store/auth';
+  import { onLoad } from '@dcloudio/uni-app';
+
   const onChooseAvatar = async (res) => {
     await uni.showLoading({
       title: '上传中',
@@ -42,6 +44,11 @@
       url: '/pages/my/name',
     });
   };
+  const userIfo = ref({});
+  const AuthStore = useAuthStore();
+  onLoad(() => {
+    userIfo.value = AuthStore.userInfo;
+  });
 </script>
 
 <style scoped lang="less">

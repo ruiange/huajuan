@@ -80,7 +80,7 @@
     position: relative;
 
     .occupation {
-      border: 1px solid red;
+      //border: 1px solid red;
       position: absolute;
       width: 100%;
       height: 200rpx;
