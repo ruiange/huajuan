@@ -3,11 +3,11 @@
     <view class="user-info">
       <view class="user-info-left">
         <view class="avatar-box">
-          <image class="avatar" src="https://s1.locimg.com/2025/04/04/f62de45385cd1.gif"></image>
+          <image class="avatar" :src="userInfo?.avatar"></image>
         </view>
         <view class="user-info-details">
-          <view class="user-name">喜羊羊</view>
-          <view class="desc">来到花卷萌的第 100 天</view>
+          <view class="user-name">{{ userInfo?.name }}</view>
+          <view class="desc">来到花卷萌的第 {{ userInfo?.days }} 天</view>
         </view>
       </view>
 
@@ -23,7 +23,7 @@
         </view>
         <image
           src="https://s1.locimg.com/2025/04/10/57b6c2c68f18d.png"
-          style="width: 30rpx"
+          style="width: 30rpx; height: 30rpx"
           mode="widthFix"
         ></image>
       </view>
@@ -32,12 +32,21 @@
   </view>
 </template>
 
-<script setup >
-  import { onShow } from '@dcloudio/uni-app';
+<script setup>
+  import { onLoad, onShow } from '@dcloudio/uni-app';
   import { useAuthStore } from '../../store/auth';
+  import { computed, ref, watch } from 'vue';
+
+
+  const AuthStore = useAuthStore();
+  const userInfo = computed(() => {
+    return AuthStore.getUserInfo;
+  });
+
+
 
   const myGameAccount = () => {
-    console.log('=======')
+    console.log('=======');
     uni.navigateTo({
       url: '/pages/my/game/game',
     });
@@ -55,11 +64,12 @@
     });
   };
 
-  onShow(()=>{
-    const AuthStore =  useAuthStore()
-    const isLoggedIn  = AuthStore.isLoggedIn
-    console.log(isLoggedIn)
-  })
+  onShow(() => {
+    const isLoggedIn = AuthStore.isLoggedIn;
+    console.log(isLoggedIn);
+  });
+  const days = ref(0);
+  onLoad(() => {});
 </script>
 
 <style scoped lang="less">
