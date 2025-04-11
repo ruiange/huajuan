@@ -32,7 +32,7 @@
   </view>
 </template>
 
-<script setup lang="ts">
+<script setup >
   const myGameAccount = () => {
     console.log('=======')
     uni.navigateTo({
@@ -47,9 +47,8 @@
   };
 
   const editInfo = () => {
-    uni.showToast({
-      title: '开发中',
-      icon: 'none',
+    uni.navigateTo({
+      url: '/pages/my/info',
     });
   };
 </script>

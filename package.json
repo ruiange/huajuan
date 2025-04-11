@@ -49,6 +49,7 @@
     "@dcloudio/uni-mp-weixin": "3.0.0-4040520250104002",
     "@dcloudio/uni-mp-xhs": "3.0.0-4040520250104002",
     "@dcloudio/uni-quickapp-webview": "3.0.0-4040520250104002",
+    "dayjs": "^1.11.13",
     "less": "^4.3.0",
     "less-loader": "^12.2.0",
     "luch-request": "^3.1.1",

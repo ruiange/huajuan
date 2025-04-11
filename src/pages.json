@@ -14,12 +14,27 @@
         "enablePullDownRefresh": false,
         "navigationStyle": "custom"
       }
+    },
+    {
+      "path": "pages/my/info",
+      "style": {
+        "navigationBarTitleText": "编辑资料",
+        "enablePullDownRefresh": false,
+        "navigationBarBackgroundColor": "#fff"
+      }
+    },
+    {
+      "path": "pages/my/name",
+      "style": {
+        "navigationBarTitleText": "修改昵称",
+        "enablePullDownRefresh": false
+      }
     }
   ],
   "globalStyle": {
     "navigationBarTextStyle": "black",
     "navigationBarTitleText": "画卷",
     "navigationBarBackgroundColor": "#F8F8F8",
-    "backgroundColor": "#f4ab00"
+    "backgroundColor": "#F8F8F8"
   }
 }

@@ -23,7 +23,12 @@ export const useAuthStore = defineStore('auth', {
       console.log('开始登录');
       const { code } = await uni.login();
       console.log(code);
-      await loginAPI({ code })
+      const {data,code:resCode} = await loginAPI({ code })
+      console.log(data,resCode)
+      if(resCode===2000){
+        this.setToken(data.token)
+        this.setUserInfo(data.userInfo)
+      }
     },
 
     logout() {},
