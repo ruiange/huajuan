@@ -33,6 +33,9 @@
 </template>
 
 <script setup >
+  import { onShow } from '@dcloudio/uni-app';
+  import { useAuthStore } from '../../store/auth';
+
   const myGameAccount = () => {
     console.log('=======')
     uni.navigateTo({
@@ -51,6 +54,12 @@
       url: '/pages/my/info',
     });
   };
+
+  onShow(()=>{
+    const AuthStore =  useAuthStore()
+    const isLoggedIn  = AuthStore.isLoggedIn
+    console.log(isLoggedIn)
+  })
 </script>
 
 <style scoped lang="less">

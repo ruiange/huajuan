@@ -8,7 +8,11 @@ import {useAuthStore} from "./store/auth";
 export default {
   onLaunch: function () {
     const AuthStore =  useAuthStore()
-    AuthStore.LOGIN()
+    const isLoggedIn  = AuthStore.isLoggedIn
+    if(!isLoggedIn){
+      AuthStore.LOGIN()
+    }
+    console.log(AuthStore.$state)
   },
   onShow: function () {
   },

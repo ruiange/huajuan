@@ -3,8 +3,8 @@ import { loginAPI } from '../api/auth';
 
 export const useAuthStore = defineStore('auth', {
   state: () => ({
-    token: '',
-    userInfo: null,
+    token: uni.getStorageSync('token') || '',
+    userInfo: uni.getStorageSync('userInfo') || null,
   }),
 
   getters: {
@@ -26,6 +26,8 @@ export const useAuthStore = defineStore('auth', {
       const {data,code:resCode} = await loginAPI({ code })
       console.log(data,resCode)
       if(resCode===2000){
+        uni.setStorageSync('token', data.token);
+        uni.setStorageSync('userInfo', data.userInfo);
         this.setToken(data.token)
         this.setUserInfo(data.userInfo)
       }
