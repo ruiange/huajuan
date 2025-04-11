@@ -36,14 +36,12 @@
   import { onLoad, onShow } from '@dcloudio/uni-app';
   import { useAuthStore } from '../../store/auth';
   import { computed, ref, watch } from 'vue';
-
+  import { getUserInfoAPI } from '../../api/user';
 
   const AuthStore = useAuthStore();
   const userInfo = computed(() => {
     return AuthStore.getUserInfo;
   });
-
-
 
   const myGameAccount = () => {
     console.log('=======');
@@ -66,7 +64,9 @@
 
   onShow(() => {
     const isLoggedIn = AuthStore.isLoggedIn;
-    console.log(isLoggedIn);
+    if(isLoggedIn){
+      AuthStore.UPDATE_INFO()
+    }
   });
   const days = ref(0);
   onLoad(() => {});

@@ -11,10 +11,7 @@ const httpRequest = new Request({
   },
 });
 
-const tokenName = `${env}_token`
-const refreshTokenName = `${env}_refreshToken`
-const userInfoName = `${env}_userInfo`
-const phoneBindName = `${env}_phoneBind`
+
 
 // 请求队列
 let requestList = [];
@@ -25,8 +22,7 @@ let isRefreshToken = false;
 //请求拦截器
 httpRequest.interceptors.request.use(
   async (config) => {
-    const tokenName = `${env}_token`
-    const token = uni.getStorageSync(tokenName);
+    const token = uni.getStorageSync('token');
     if (token&&!config.header.unauthenticatedLogin) {
       config.header.Authorization =  token;
     }

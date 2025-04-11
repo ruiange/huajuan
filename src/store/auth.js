@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia';
 import { loginAPI } from '../api/auth';
+import { getUserInfoAPI } from '../api/user';
 
 export const useAuthStore = defineStore('auth', {
   state: () => ({
@@ -13,8 +14,16 @@ export const useAuthStore = defineStore('auth', {
   },
 
   actions: {
-    setToken(token) {},
-    setUserInfo(info) {},
+    setToken(token) {
+      this.token = token;
+    },
+    setUserInfo(info) {
+      this.userInfo = info;
+    },
+    async UPDATE_INFO() {
+      const { data } = await getUserInfoAPI();
+      this.setUserInfo(data.userInfo);
+    },
     /**
      * 发起登录请求
      * @returns {Promise<void>}
@@ -23,15 +32,14 @@ export const useAuthStore = defineStore('auth', {
     async LOGIN() {
       console.log('开始登录');
       const { code } = await uni.login();
-      console.log(code);
-      const {data,code:resCode} = await loginAPI({ code })
-      console.log(data,resCode)
-      if(resCode===2000){
+      const { data, code: resCode } = await loginAPI({ code });
+      if (resCode === 2000) {
         uni.setStorageSync('token', data.token);
         uni.setStorageSync('userInfo', data.userInfo);
-        this.setToken(data.token)
-        this.setUserInfo(data.userInfo)
+        this.setToken(data.token);
+        this.setUserInfo(data.userInfo);
       }
+      console.log('登录结束');
     },
 
     logout() {},
