@@ -44,11 +44,16 @@ httpRequest.interceptors.response.use(
     return response.data;
   },
   async (error) => {
-    await uni.showToast({
-      title: error.data.messages || '错误请求',
-      icon: 'none',
-      duration: 4000,
-    });
+    console.log(error);
+    try {
+      await uni.showToast({
+        title: error.data.messages || '错误请求',
+        icon: 'none',
+        duration: 4000,
+      });
+    } catch (e) {
+      console.log(e.message);
+    }
     return Promise.reject(error);
   }
 );

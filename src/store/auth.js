@@ -21,8 +21,13 @@ export const useAuthStore = defineStore('auth', {
       this.userInfo = info;
     },
     async UPDATE_INFO() {
-      const { data } = await getUserInfoAPI();
-      this.setUserInfo(data.userInfo);
+     try{
+       const { data } = await getUserInfoAPI();
+       this.setUserInfo(data.userInfo);
+     }catch (e) {
+       this.logout()
+       this.LOGIN()
+     }
     },
     /**
      * 发起登录请求
@@ -31,6 +36,9 @@ export const useAuthStore = defineStore('auth', {
      */
     async LOGIN() {
       console.log('开始登录');
+      await uni.showLoading({
+        title: '登录中...',
+      });
       const { code } = await uni.login();
       const { data, code: resCode } = await loginAPI({ code });
       if (resCode === 2000) {
@@ -39,9 +47,21 @@ export const useAuthStore = defineStore('auth', {
         this.setToken(data.token);
         this.setUserInfo(data.userInfo);
       }
+      await uni.hideLoading();
+      await uni.showToast({
+        title: '登录成功',
+        icon: 'none',
+        duration: 4000,
+      });
       console.log('登录结束');
     },
 
-    logout() {},
+    logout() {
+      uni.removeStorageSync('token');
+      uni.removeStorageSync('userInfo');
+      this.token = '';
+      this.userInfo = null;
+
+    },
   },
 });
