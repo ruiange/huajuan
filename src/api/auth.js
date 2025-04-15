@@ -11,3 +11,4 @@ export function loginAPI(data) {
     data: data,
   });
 }
+

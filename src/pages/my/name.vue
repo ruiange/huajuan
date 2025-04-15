@@ -25,20 +25,23 @@
 <script setup>
   import { ref } from 'vue';
   import { onLoad, onShow } from '@dcloudio/uni-app';
-  import * as AuthStore from 'node/os';
   import { useAuthStore } from '../../store/auth';
+  import { updateUserInfoAPI } from '../../api/user';
   const UserInfo = ref({
     name: '',
   });
   const deleteKeyword = () => {
     UserInfo.value.name = '';
   };
-  const saveInfo = () => {
-    uni.showLoading({
+  const saveInfo = async () => {
+    await uni.showLoading({
       title: '保存中',
     });
+    const { data } = await updateUserInfoAPI(UserInfo.value);
+    console.log(data.userInfo);
+    AuthStore.setUserInfo(data.userInfo);
     uni.hideLoading();
-    uni.navigateBack({
+    await uni.navigateBack({
       delta: 1,
     });
   };
@@ -49,6 +52,7 @@
   };
   const userIfo = ref({});
   const AuthStore = useAuthStore();
+
   onLoad(() => {
     userIfo.value = AuthStore.userInfo;
     console.log(userIfo.value);

@@ -1,7 +1,7 @@
-import Request from 'luch-request'
+import Request from 'luch-request';
 
-const BASE_API = import.meta.env.VITE_APP_API_URL
-const env = import.meta.env.VITE_APP_ENV
+const BASE_API = import.meta.env.VITE_APP_API_URL;
+const env = import.meta.env.VITE_APP_ENV;
 const httpRequest = new Request({
   baseURL: BASE_API,
   timeout: 30000, //超时
@@ -11,48 +11,46 @@ const httpRequest = new Request({
   },
 });
 
-
-
 // 请求队列
 let requestList = [];
 // 是否正在刷新中
 let isRefreshToken = false;
 
-
 //请求拦截器
 httpRequest.interceptors.request.use(
   async (config) => {
     const token = uni.getStorageSync('token');
-    if (token&&!config.header.unauthenticatedLogin) {
-      config.header.Authorization =  token;
+    if (token && !config.header.unauthenticatedLogin) {
+      config.header.Authorization = token;
     }
-    return config
+    return config;
   },
   async (err) => {
-    return Promise.reject(err)
+    return Promise.reject(err);
   }
-)
+);
 
 //响应拦截器
 httpRequest.interceptors.response.use(
   async (response) => {
-    if (response.data.code === 2000) {
-      return response.data
+    uni.hideLoading();
+    if (response.data.code !== 2000) {
+      await uni.showToast({
+        title: response.data.message,
+        icon: 'none',
+        duration: 4000,
+      });
     }
-    uni.hideLoading()
-    await uni.showToast({
-      title: response.data.message || '请求错误',
-      duration: 3000,
-      icon: 'none',
-    })
-
-    return response.data
-
+    return response.data;
   },
   async (error) => {
-    return Promise.reject(error)
+    await uni.showToast({
+      title: error.data.messages || '错误请求',
+      icon: 'none',
+      duration: 4000,
+    });
+    return Promise.reject(error);
   }
-)
+);
 
-
-export default httpRequest
+export default httpRequest;

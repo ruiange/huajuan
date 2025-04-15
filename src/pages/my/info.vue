@@ -1,7 +1,8 @@
 <template>
   <view class="list">
     <view class="list-item">
-      <image class="avatar" :src="userIfo?.avatar"></image>
+      <image class="avatar" :src="userIfo?.avatar" v-if="userIfo?.avatar"></image>
+      <image class="avatar" src="/static/images/default.png" v-else></image>
       <view class="btn">
         <button class="avatar-wrapper" open-type="chooseAvatar" @chooseavatar="onChooseAvatar">
           更换头像
@@ -30,7 +31,7 @@
 
 <script setup>
   import { useAuthStore } from '../../store/auth';
-  import { onLoad } from '@dcloudio/uni-app';
+  import { onLoad, onShow } from '@dcloudio/uni-app';
   import { ref } from 'vue';
   import { updateUserInfoAPI } from '../../api/user';
 
@@ -43,8 +44,8 @@
     const params = {
       avatar: res.detail.avatarUrl,
     };
-    const { data } = await updateUserInfoAPI(params);
-    console.log(data);
+    const data = await updateUserInfoAPI(params);
+    console.warn(data);
 
     uni.hideLoading();
     await uni.showToast({
@@ -59,7 +60,7 @@
   };
   const userIfo = ref({});
   const AuthStore = useAuthStore();
-  onLoad(() => {
+  onShow(() => {
     userIfo.value = AuthStore.userInfo;
     console.log(userIfo.value);
   });

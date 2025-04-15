@@ -3,7 +3,8 @@
     <view class="user-info">
       <view class="user-info-left">
         <view class="avatar-box">
-          <image class="avatar" :src="userInfo?.avatar"></image>
+          <image class="avatar" :src="userInfo?.avatar" v-if="userInfo?.avatar"></image>
+          <image class="avatar" :src="RandomAvatar" v-else></image>
         </view>
         <view class="user-info-details">
           <view class="user-name">{{ userInfo?.name }}</view>
@@ -37,7 +38,9 @@
   import { useAuthStore } from '../../store/auth';
   import { computed, ref, watch } from 'vue';
   import { getUserInfoAPI } from '../../api/user';
+  import { generateRandomAvatar } from '../../utils';
 
+  const RandomAvatar = ref('');
   const AuthStore = useAuthStore();
   const userInfo = computed(() => {
     return AuthStore.getUserInfo;
@@ -64,9 +67,10 @@
 
   onShow(() => {
     const isLoggedIn = AuthStore.isLoggedIn;
-    if(isLoggedIn){
-      AuthStore.UPDATE_INFO()
+    if (isLoggedIn) {
+      AuthStore.UPDATE_INFO();
     }
+    RandomAvatar.value = generateRandomAvatar();
   });
   const days = ref(0);
   onLoad(() => {});
