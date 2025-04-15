@@ -82,7 +82,7 @@
   const postForm = async (params) => {
     await uni.showLoading({
       title: '加载中',
-    })
+    });
     const { code } = await addGameAccountAPI(params);
     uni.hideLoading();
     if (code === 2000) {
@@ -95,7 +95,7 @@
   const putForm = async (params) => {
     await uni.showLoading({
       title: '加载中',
-    })
+    });
     const { code } = await updateGameAccountAPI(params);
     uni.hideLoading();
     if (code === 2000) {
