@@ -26,7 +26,7 @@ export const useAuthStore = defineStore('auth', {
        this.setUserInfo(data.userInfo);
      }catch (e) {
        this.logout()
-       this.LOGIN()
+       await this.LOGIN()
      }
     },
     /**
