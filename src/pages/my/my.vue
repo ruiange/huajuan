@@ -49,7 +49,7 @@
   const myGameAccount = () => {
     console.log('=======');
     uni.navigateTo({
-      url: '/pages/my/game/game',
+      url: '/pages/forms/forms',
     });
   };
   const myAddress = () => {

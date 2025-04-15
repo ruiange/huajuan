@@ -45,6 +45,13 @@
         "navigationBarBackgroundColor": "#fff",
         "navigationStyle": "custom"
       }
+    },
+    {
+      "path": "pages/forms/forms",
+      "style": {
+        "navigationBarTitleText": "我的九阴账号",
+        "enablePullDownRefresh": false
+      }
     }
   ],
   "globalStyle": {
