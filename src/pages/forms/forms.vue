@@ -83,7 +83,8 @@
     await uni.showLoading({
       title: '加载中',
     });
-    const { code } = await addGameAccountAPI(params);
+    const { code,data } = await addGameAccountAPI(params);
+    formData.value = data.info
     uni.hideLoading();
     if (code === 2000) {
       await uni.showToast({
@@ -96,7 +97,8 @@
     await uni.showLoading({
       title: '加载中',
     });
-    const { code } = await updateGameAccountAPI(params);
+    const { code,data } = await updateGameAccountAPI(params);
+    formData.value = data.info
     uni.hideLoading();
     if (code === 2000) {
       await uni.showToast({
