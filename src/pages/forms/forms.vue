@@ -80,7 +80,11 @@
     }
   };
   const postForm = async (params) => {
-    const { code } = await getGameAccountAPI(params);
+    await uni.showLoading({
+      title: '加载中',
+    })
+    const { code } = await addGameAccountAPI(params);
+    uni.hideLoading();
     if (code === 2000) {
       await uni.showToast({
         title: '保存成功',
@@ -89,7 +93,11 @@
     }
   };
   const putForm = async (params) => {
+    await uni.showLoading({
+      title: '加载中',
+    })
     const { code } = await updateGameAccountAPI(params);
+    uni.hideLoading();
     if (code === 2000) {
       await uni.showToast({
         title: '保存成功',
