@@ -20,7 +20,20 @@
       <input v-model="formData.tieba_name" placeholder="请输入游戏区服" />
     </view>
 
-    <button type="submit" @click="handleSubmit">提交</button>
+    <view class="sub-btn" type="submit" @click="handleSubmit">提交</view>
+
+    <!-- 成功提示弹窗 -->
+    <view v-if="showSuccessModal" class="modal-overlay">
+      <view class="modal-content">
+        <view class="modal-body">
+          <text class="success-icon">✓</text>
+          <text class="success-text">保存成功</text>
+        </view>
+        <view class="modal-footer">
+          <view @click="closeSuccessModal" class="confirm-btn">确定</view>
+        </view>
+      </view>
+    </view>
   </view>
 </template>
 
@@ -39,6 +52,13 @@
     game_address: '',
     tieba_name: '',
   });
+
+  const showSuccessModal = ref(false);
+
+  const closeSuccessModal = () => {
+    showSuccessModal.value = false;
+    uni.navigateBack();
+  };
 
   const handleSubmit = async () => {
     console.log('表单数据：', formData);
@@ -83,28 +103,23 @@
     await uni.showLoading({
       title: '加载中',
     });
-    const { code,data } = await addGameAccountAPI(params);
-    formData.value = data.info
+    const { code, data } = await addGameAccountAPI(params);
+    formData.value = data.info;
     uni.hideLoading();
     if (code === 2000) {
-      await uni.showToast({
-        title: '保存成功',
-        icon: 'success',
-      });
+      showSuccessModal.value = true;
     }
   };
+
   const putForm = async (params) => {
     await uni.showLoading({
       title: '加载中',
     });
-    const { code,data } = await updateGameAccountAPI(params);
-    formData.value = data.info
+    const { code, data } = await updateGameAccountAPI(params);
+    formData.value = data.info;
     uni.hideLoading();
     if (code === 2000) {
-      await uni.showToast({
-        title: '保存成功',
-        icon: 'success',
-      });
+      showSuccessModal.value = true;
     }
   };
   onLoad(() => {
@@ -150,5 +165,73 @@
       border-radius: 4px;
       border: none;
     }
+  }
+
+  .modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 999;
+  }
+
+  .modal-content {
+    background-color: #fff;
+    border-radius: 8px;
+    width: 80%;
+    max-width: 300px;
+    padding: 20px;
+  }
+
+  .modal-body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px 0;
+  }
+
+  .success-icon {
+    font-size: 40px;
+    color: #07c160;
+    margin-bottom: 10px;
+  }
+
+  .success-text {
+    font-size: 16px;
+    color: #333;
+  }
+
+  .modal-footer {
+    margin-top: 20px;
+    text-align: center;
+  }
+
+  .confirm-btn {
+    background: linear-gradient(to right, #d8d9ff, #e0e0fb, #f5ebf2, #fdeeec, #fdeeec);
+    color: #333;
+    border: none;
+    border-radius: 4px;
+    padding: 10px 20px;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .sub-btn{
+    background: linear-gradient(to right, #d8d9ff, #e0e0fb, #f5ebf2, #fdeeec, #fdeeec);
+    color: #333;
+    border: none;
+    border-radius: 4px;
+    padding: 14px 20px;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 0 10rpx 0 rgba(0, 0, 0, 0.1);
   }
 </style>

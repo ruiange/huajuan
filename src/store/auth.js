@@ -21,10 +21,16 @@ export const useAuthStore = defineStore('auth', {
       this.userInfo = info;
     },
     async UPDATE_INFO() {
+      await uni.showLoading({
+        title: '加载中...',
+      })
      try{
        const { data } = await getUserInfoAPI();
        this.setUserInfo(data.userInfo);
+       uni.hideLoading()
      }catch (e) {
+       uni.hideLoading()
+       console.log(e.message);
        this.logout()
        await this.LOGIN()
      }
