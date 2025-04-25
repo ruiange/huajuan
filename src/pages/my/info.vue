@@ -34,15 +34,25 @@
   import { onLoad, onShow } from '@dcloudio/uni-app';
   import { ref } from 'vue';
   import { updateUserInfoAPI } from '../../api/user';
-
+  import uploadUtil from '../../utils/uploadUtil';
   const onChooseAvatar = async (res) => {
     await uni.showLoading({
       title: '上传中',
     });
-    console.log(res.detail.avatarUrl);
+    console.log(res);
     userIfo.value.avatar = res.detail.avatarUrl;
+
+    const avatar = await uploadUtil(res.detail.avatarUrl, 'avatar');
+    if (!avatar) {
+      uni.hideLoading();
+      await uni.showToast({
+        title: '上传失败',
+        icon: 'none',
+      });
+      return;
+    }
     const params = {
-      avatar: res.detail.avatarUrl,
+      avatar,
     };
     const data = await updateUserInfoAPI(params);
     console.warn(data);
