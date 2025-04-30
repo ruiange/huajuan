@@ -15,7 +15,6 @@
         "navigationStyle": "custom"
       }
     },
-
     {
       "path": "pages/my/info",
       "style": {
@@ -53,6 +52,13 @@
         "navigationBarTitleText": "我的九阴账号",
         "enablePullDownRefresh": false
       }
+    },
+    {
+      "path": "pages/news/9yinDetail",
+      "style": {
+        "navigationBarTitleText": "新闻详情",
+        "enablePullDownRefresh": false
+      }
     }
   ],
   "globalStyle": {
@@ -64,7 +70,7 @@
   "tabBar": {
     "color": "#8a8a8a",
     "selectedColor": "#FFCA22",
-    "borderStyle": "black",
+    "borderStyle": "white",
     "backgroundColor": "#fff",
     "list": [
       {

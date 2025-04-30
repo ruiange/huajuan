@@ -65,7 +65,7 @@
     });
   };
 
-  onShow(() => {
+  onLoad(() => {
     const isLoggedIn = AuthStore.isLoggedIn;
     if (isLoggedIn) {
       AuthStore.UPDATE_INFO();
@@ -73,7 +73,6 @@
     RandomAvatar.value = generateRandomAvatar();
   });
   const days = ref(0);
-  onLoad(() => {});
 </script>
 
 <style scoped lang="less">

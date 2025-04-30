@@ -21,7 +21,7 @@
   const getNewsList = async () => {
     const { data } = await getNews9yinListApi({
       pageNum: 1,
-      pageSize: 5,
+      pageSize: 15,
     });
     newsList.value = data.list;
     console.log(newsList.value);
