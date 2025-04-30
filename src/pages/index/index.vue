@@ -1,48 +1,36 @@
 <template>
   <view class="content">
-    <image class="logo" src="/static/logo.png"></image>
-    <view class="text-area">
-      <text class="title">{{ title }}</text>
+    <view>
+      <block v-for="(item, index) in newsList" :key="index">
+        <news-list-item :info="item"></news-list-item>
+      </block>
     </view>
   </view>
 </template>
 
-<script>
-export default {
-  data() {
-    return {
-      title: 'Hello',
-    }
-  },
-  onLoad() {},
-  methods: {},
-}
+<script setup>
+  import { onLoad } from '@dcloudio/uni-app';
+  import { getNews9yinListApi } from '../../api/news9yin';
+  import { ref } from 'vue';
+  import NewsListItem from '../../components/news-list-item.vue';
+
+  onLoad(() => {
+    getNewsList();
+  });
+  const newsList = ref([]);
+  const getNewsList = async () => {
+    const { data } = await getNews9yinListApi({
+      pageNum: 1,
+      pageSize: 5,
+    });
+    newsList.value = data.list;
+    console.log(newsList.value);
+  };
 </script>
 
 <style>
-.content {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-}
-
-.logo {
-  height: 200rpx;
-  width: 200rpx;
-  margin-top: 200rpx;
-  margin-left: auto;
-  margin-right: auto;
-  margin-bottom: 50rpx;
-}
-
-.text-area {
-  display: flex;
-  justify-content: center;
-}
-
-.title {
-  font-size: 36rpx;
-  color: #8f8f94;
-}
+  .content {
+    padding: 30rpx;
+    background: #F5F7FA;
+  }
 </style>
