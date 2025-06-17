@@ -28,7 +28,7 @@
           mode="widthFix"
         ></image>
       </view>
-      <view class="box box2" @click="myAddress">我的地址</view>
+<!--      <view class="box box2" @click="myAddress">我的地址</view>-->
     </view>
   </view>
 </template>
