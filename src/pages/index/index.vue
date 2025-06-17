@@ -4,6 +4,8 @@
       <canvas
         class="lucky-wheel"
         canvas-id="luckyWheel"
+        type="2d"
+        id="luckyWheel"
         :style="{ width: canvasWidth + 'px', height: canvasHeight + 'px' }"
       ></canvas>
       <view class="pointer-container">
@@ -61,17 +63,59 @@
   ])
   const isRotating = ref(false)
   const ctx = ref<any>(null)
+  const canvas = ref<any>(null)
   const currentAngle = ref(0)
   const targetAngle = ref(0)
   const showDialog = ref(false)
   const editingPrizes = ref<Prize[]>([])
 
-  const initCanvas = () => {
-    ctx.value = uni.createCanvasContext('luckyWheel')
-    drawWheel()
+  const initCanvas = async () => {
+    try {
+      // 检测是否为微信小程序环境
+      // #ifdef MP-WEIXIN
+      const query = uni.createSelectorQuery()
+      query.select('#luckyWheel')
+        .fields({ node: true, size: true })
+        .exec((res) => {
+          if (res && res[0] && res[0].node) {
+            canvas.value = res[0].node
+            ctx.value = canvas.value.getContext('2d')
+
+            // 设置Canvas尺寸
+            const dpr = uni.getSystemInfoSync().pixelRatio || 1
+            canvas.value.width = canvasWidth.value * dpr
+            canvas.value.height = canvasHeight.value * dpr
+            ctx.value.scale(dpr, dpr)
+
+            drawWheel()
+          } else {
+            fallbackToOldCanvas()
+          }
+        })
+      // #endif
+
+      // #ifndef MP-WEIXIN
+      fallbackToOldCanvas()
+      // #endif
+    } catch (error) {
+      fallbackToOldCanvas()
+    }
+  }
+
+  const fallbackToOldCanvas = () => {
+    try {
+      ctx.value = uni.createCanvasContext('luckyWheel')
+      if (ctx.value) {
+        drawWheel()
+      }
+    } catch (error) {
+      // Canvas初始化失败
+    }
   }
 
   const drawWheel = () => {
+    if (!ctx.value) return
+
     const context = ctx.value
     const centerX = canvasWidth.value / 2
     const centerY = canvasHeight.value / 2
@@ -106,7 +150,10 @@
       context.restore()
     })
 
-    context.draw()
+    // 兼容新旧Canvas API的draw方法
+    if (context.draw) {
+      context.draw()
+    }
   }
 
   const startRotate = () => {
@@ -161,7 +208,9 @@
   const closeDialog = () => {
     showDialog.value = false
     nextTick(() => {
-      initCanvas()
+      setTimeout(() => {
+        drawWheel()
+      }, 100)
     })
   }
 
@@ -198,7 +247,12 @@
   }
 
   onMounted(() => {
-    initCanvas()
+    // 延迟初始化，确保DOM已渲染
+    nextTick(() => {
+      setTimeout(() => {
+        initCanvas()
+      }, 100)
+    })
   })
 </script>
 
