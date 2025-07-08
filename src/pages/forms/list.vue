@@ -1,10 +1,14 @@
 <template>
   <view class="list-container">
+    <view class="add-btn" @click="goAdd">添加账号</view>
     <view v-if="loading" class="loading">加载中...</view>
     <view v-else>
-      <view v-if="accounts.length === 0" class="empty">暂无数据</view>
+      <view v-if="accounts.length === 0" class="empty">
+        <image src="/static/images/default.png" class="empty-img" mode="widthFix" />
+        <view>暂无账号，点击上方"添加账号"按钮新增</view>
+      </view>
       <view v-else>
-        <view v-for="(item, idx) in accounts" :key="item._id || idx" class="card">
+        <view v-for="(item, idx) in accounts" :key="item._id || idx" class="card" @click="goEdit(item._id)">
           <view v-if="item.is_default" class="default-tag">默认</view>
           <view class="card-row">
             <text class="label">游戏昵称：</text>
@@ -40,7 +44,6 @@
     try {
       const { data } = await getMyGameListAccountAPI();
       accounts.value = data;
-      console.log('data', data);
     } catch (e) {
       accounts.value = [];
     } finally {
@@ -51,6 +54,20 @@
   onMounted(() => {
     fetchAccounts();
   });
+
+  // 新增：跳转到编辑页面
+  const goEdit = (id) => {
+    uni.navigateTo({
+      url: `/pages/forms/forms?id=${id}`,
+    });
+  };
+
+  // 新增：跳转到新增页面
+  const goAdd = () => {
+    uni.navigateTo({
+      url: '/pages/forms/forms',
+    });
+  };
 </script>
 
 <style scoped lang="less">
@@ -67,6 +84,7 @@
     display: flex;
     flex-direction: column;
     position: relative;
+    cursor: pointer;
   }
   .default-tag {
     position: absolute;
@@ -105,5 +123,35 @@
     text-align: center;
     color: #888;
     padding: 30px 0;
+  }
+  .add-btn {
+    width: 100%;
+    background: linear-gradient(to right, #d8d9ff, #e0e0fb, #f5ebf2, #fdeeec, #fdeeec);
+    color: #333;
+    border: none;
+    border-radius: 4px;
+    padding: 14px 20px;
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 0 10rpx 0 rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+    cursor: pointer;
+  }
+  .empty-img {
+    width: 120px;
+    margin: 0 auto 16px auto;
+    display: block;
+    opacity: 0.6;
+  }
+  .empty {
+    text-align: center;
+    color: #888;
+    padding: 40px 0 30px 0;
+    font-size: 15px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
   }
 </style>
