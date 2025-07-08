@@ -57,8 +57,7 @@
     "luch-request": "^3.1.1",
     "mp-html": "^2.5.1",
     "pinia": "^3.0.2",
-    "vue": "^3.5.13",
-    "vue-i18n": "^9.1.9"
+    "vue": "^3.5.13"
   },
   "devDependencies": {
     "@dcloudio/types": "^3.4.8",

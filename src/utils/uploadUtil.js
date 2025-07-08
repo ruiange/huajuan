@@ -10,7 +10,7 @@ const uploadUtil = async (file, path) => {
     filePath: file,
     name: 'file', // 服务端接收字段名
     formData: {
-      path, // 上传路径
+      path:`huajuan/${path}`, // 上传路径
     },
   });
   try {

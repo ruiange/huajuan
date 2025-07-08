@@ -2,9 +2,20 @@
   "pages": [
     //pages数组中第一项表示应用启动页，参考：https://uniapp.dcloud.io/collocation/pages
     {
-      "path": "pages/index/index",
+      "path": "pages/wallpaper/wallpaper",
       "style": {
-        "navigationBarTitleText": "大转盘"
+        "navigationBarTitleText": "壁纸港湾",
+        "enablePullDownRefresh": false,
+        "navigationBarBackgroundColor": "#fff",
+        "navigationStyle": "custom"
+      }
+    },
+    {
+      "path": "pages/wallpaper/details",
+      "style": {
+        "navigationBarTitleText": "壁纸详情",
+        "enablePullDownRefresh": false,
+        "navigationStyle": "custom"
       }
     },
     {
@@ -59,6 +70,13 @@
         "navigationBarTitleText": "新闻详情",
         "enablePullDownRefresh": false
       }
+    },
+    {
+      "path": "pages/forms/list",
+      "style": {
+        "navigationBarTitleText": "",
+        "enablePullDownRefresh": false
+      }
     }
   ],
   "globalStyle": {
@@ -74,7 +92,7 @@
     "backgroundColor": "#fff",
     "list": [
       {
-        "pagePath": "pages/index/index",
+        "pagePath": "pages/wallpaper/wallpaper",
         "text": "首页",
         "iconPath": "static/images/tabbar/index.png",
         "selectedIconPath": "static/images/tabbar/index_active.png"

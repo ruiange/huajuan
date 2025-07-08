@@ -19,13 +19,23 @@ export function addGameAccountAPI(data) {
 GET /gameAccount
 接口ID：284263198
 接口地址：https://app.apifox.com/link/project/6189677/apis/api-284263198*/
-export function getGameAccountAPI() {
+export function getGameAccountAPI(id) {
   return httpRequest.request({
-    url: '/gameAccount',
+    url: `/gameAccount?id=${id}`,
     method: 'get',
   });
 }
-
+/*
+获取游戏账号信息
+GET /gameAccount
+接口ID：284263198
+接口地址：https://app.apifox.com/link/project/6189677/apis/api-284263198*/
+export function getMyGameListAccountAPI() {
+  return httpRequest.request({
+    url: '/gameAccount/my/list',
+    method: 'get',
+  });
+}
 
 /*修改游戏账号信息
 PUT /gameAccount/

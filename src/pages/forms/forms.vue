@@ -20,6 +20,11 @@
       <input v-model="formData.tieba_name" placeholder="请输入游戏区服" />
     </view>
 
+    <view class="form-item">
+      <text>是否默认</text>
+      <switch :checked="formData.is_default" @change="onDefaultChange" />
+    </view>
+
     <view class="sub-btn" type="submit" @click="handleSubmit">提交</view>
 
     <!-- 成功提示弹窗 -->
@@ -51,6 +56,7 @@
     game_AccountNumber: '',
     game_address: '',
     tieba_name: '',
+    is_default: false,
   });
 
   const showSuccessModal = ref(false);
@@ -122,16 +128,24 @@
       showSuccessModal.value = true;
     }
   };
-  onLoad(() => {
-    console.log('=================================');
-    getGameAccount();
+  const id = ref(null)
+  onLoad((options) => {
+    if('id' in options){
+      id.value = options.id;
+      getGameAccount(id.value);
+    }
   });
-  const getGameAccount = async () => {
-    const { data, code } = await getGameAccountAPI();
+  const getGameAccount = async (id) => {
+    const { data, code } = await getGameAccountAPI(id);
     console.log('data', data);
     if (data) {
       formData.value = data;
     }
+  };
+
+  // 新增：switch组件change事件处理
+  const onDefaultChange = (e) => {
+    formData.value.is_default = e.detail.value;
   };
 </script>
 
