@@ -8,7 +8,13 @@
         <view>暂无账号，点击上方"添加账号"按钮新增</view>
       </view>
       <view v-else>
-        <view v-for="(item, idx) in accounts" :key="item._id || idx" class="card" @click="goEdit(item._id)">
+        <view
+          v-for="(item, idx) in accounts"
+          :key="item._id || idx"
+          class="card"
+          @click="goEdit(item._id)"
+          @longpress="onLongPress(item._id)"
+        >
           <view v-if="item.is_default" class="default-tag">默认</view>
           <view class="card-row">
             <text class="label">游戏昵称：</text>
@@ -34,7 +40,8 @@
 
 <script setup>
   import { onMounted, ref } from 'vue';
-  import { getMyGameListAccountAPI } from '../../api/gameAccount';
+  import { getMyGameListAccountAPI, deleteGameAccountAPI } from '../../api/gameAccount';
+  import { onShow } from '@dcloudio/uni-app';
 
   const accounts = ref([]);
   const loading = ref(true);
@@ -51,7 +58,7 @@
     }
   };
 
-  onMounted(() => {
+  onShow(() => {
     fetchAccounts();
   });
 
@@ -66,6 +73,21 @@
   const goAdd = () => {
     uni.navigateTo({
       url: '/pages/forms/forms',
+    });
+  };
+
+  // 新增：长按删除
+  const onLongPress = (id) => {
+    uni.showModal({
+      title: '提示',
+      content: '是否删除该账号？',
+      success: async (res) => {
+        if (res.confirm) {
+          await deleteGameAccountAPI(id);
+          await uni.showToast({ title: '删除成功', icon: 'success' });
+          await fetchAccounts();
+        }
+      },
     });
   };
 </script>

@@ -48,3 +48,10 @@ export function updateGameAccountAPI(data) {
     data: data,
   });
 }
+
+export const deleteGameAccountAPI = (id) => {
+  return httpRequest.request({
+    url: `/gameAccount/${id}`,
+    method: 'delete',
+  });
+};

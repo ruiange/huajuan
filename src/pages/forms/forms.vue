@@ -56,7 +56,7 @@
     game_AccountNumber: '',
     game_address: '',
     tieba_name: '',
-    is_default: false,
+    is_default: true,
   });
 
   const showSuccessModal = ref(false);
