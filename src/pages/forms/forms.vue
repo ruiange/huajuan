@@ -25,7 +25,7 @@
       <switch :checked="formData.is_default" @change="onDefaultChange" />
     </view>
 
-    <view class="sub-btn" type="submit" @click="handleSubmit">提交</view>
+    <view class="sub-btn" :class="{ disabled: loading }" :disabled="loading" @click="handleSubmit">{{ loading ? '加载中...' : '提交' }}</view>
 
     <!-- 成功提示弹窗 -->
     <view v-if="showSuccessModal" class="modal-overlay">
@@ -60,6 +60,7 @@
   });
 
   const showSuccessModal = ref(false);
+  const loading = ref(false);
 
   const closeSuccessModal = () => {
     showSuccessModal.value = false;
@@ -67,6 +68,7 @@
   };
 
   const handleSubmit = async () => {
+    if (loading.value) return;
     console.log('表单数据：', formData);
     //添加字段校验
     if (!formData.value.game_nick_name) {
@@ -106,14 +108,19 @@
     }
   };
   const postForm = async (params) => {
-    await uni.showLoading({
-      title: '加载中',
-    });
-    const { code, data } = await addGameAccountAPI(params);
-    formData.value = data.info;
-    uni.hideLoading();
-    if (code === 2000) {
-      showSuccessModal.value = true;
+    loading.value = true;
+    try {
+      await uni.showLoading({
+        title: '加载中',
+      });
+      const { code, data } = await addGameAccountAPI(params);
+      formData.value = data.info;
+      if (code === 2000) {
+        showSuccessModal.value = true;
+      }
+    } finally {
+      loading.value = false;
+      uni.hideLoading();
     }
   };
   const pages = getCurrentPages();
@@ -128,14 +135,19 @@
   };
 
   const putForm = async (params) => {
-    await uni.showLoading({
-      title: '加载中',
-    });
-    const { code, data } = await updateGameAccountAPI(params);
-    formData.value = data.info;
-    uni.hideLoading();
-    if (code === 2000) {
-      showSuccessModal.value = true;
+    loading.value = true;
+    try {
+      await uni.showLoading({
+        title: '加载中',
+      });
+      const { code, data } = await updateGameAccountAPI(params);
+      formData.value = data.info;
+      if (code === 2000) {
+        showSuccessModal.value = true;
+      }
+    } finally {
+      loading.value = false;
+      uni.hideLoading();
     }
   };
   const id = ref(null);
@@ -146,10 +158,15 @@
     }
   });
   const getGameAccount = async (id) => {
-    const { data, code } = await getGameAccountAPI(id);
-    console.log('data', data);
-    if (data) {
-      formData.value = data;
+    loading.value = true;
+    try {
+      const { data, code } = await getGameAccountAPI(id);
+      console.log('data', data);
+      if (data) {
+        formData.value = data;
+      }
+    } finally {
+      loading.value = false;
     }
   };
 
@@ -257,5 +274,9 @@
     align-items: center;
     justify-content: center;
     box-shadow: 0 0 10rpx 0 rgba(0, 0, 0, 0.1);
+  }
+  .sub-btn.disabled {
+    opacity: 0.6;
+    pointer-events: none;
   }
 </style>
