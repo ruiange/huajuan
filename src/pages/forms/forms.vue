@@ -116,6 +116,16 @@
       showSuccessModal.value = true;
     }
   };
+  const pages = getCurrentPages();
+  const goBack = () => {
+    if (pages.length > 1) {
+      uni.navigateBack();
+    } else {
+      uni.reLaunch({
+        url: '/pages/forms/list',
+      });
+    }
+  };
 
   const putForm = async (params) => {
     await uni.showLoading({
@@ -128,9 +138,9 @@
       showSuccessModal.value = true;
     }
   };
-  const id = ref(null)
+  const id = ref(null);
   onLoad((options) => {
-    if('id' in options){
+    if ('id' in options) {
       id.value = options.id;
       getGameAccount(id.value);
     }
@@ -236,7 +246,7 @@
     align-items: center;
     justify-content: center;
   }
-  .sub-btn{
+  .sub-btn {
     background: linear-gradient(to right, #d8d9ff, #e0e0fb, #f5ebf2, #fdeeec, #fdeeec);
     color: #333;
     border: none;
