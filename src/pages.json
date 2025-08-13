@@ -1,6 +1,20 @@
 {
   "pages": [
-    //pages数组中第一项表示应用启动页，参考：https://uniapp.dcloud.io/collocation/pages
+    {
+      "path": "pages/douyin/index",
+      "style": {
+        "navigationBarTitleText": "视频解析",
+        "enablePullDownRefresh": false
+      }
+    },
+    {
+      "path": "pages/douyin/douyin",
+      "style": {
+        "navigationBarTitleText": "",
+        "enablePullDownRefresh": false,
+        "navigationBarBackgroundColor": "#fff"
+      }
+    },
     {
       "path": "pages/wallpaper/wallpaper",
       "style": {
@@ -92,7 +106,7 @@
     "backgroundColor": "#fff",
     "list": [
       {
-        "pagePath": "pages/wallpaper/wallpaper",
+        "pagePath": "pages/douyin/index",
         "text": "首页",
         "iconPath": "static/images/tabbar/index.png",
         "selectedIconPath": "static/images/tabbar/index_active.png"
