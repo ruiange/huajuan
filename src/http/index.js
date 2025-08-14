@@ -16,8 +16,6 @@ import { useAuthStore } from '../store/auth';
 
 // 后端基础地址（由 Vite 注入的环境变量）
 const BASE_API = import.meta.env.VITE_APP_API_URL;
-// 当前运行环境（如 development/test/production）——当前文件未直接使用，保留以便扩展
-const env = import.meta.env.VITE_APP_ENV;
 // 创建请求实例，设置通用选项
 const httpRequest = new Request({
   baseURL: BASE_API,
@@ -62,9 +60,6 @@ httpRequest.interceptors.response.use(
     const statusCode = error?.statusCode ?? error?.data?.statusCode;
     const originalConfig = error?.config || {};
     const { data: errorData } = error;
-
-    console.log('errorData');
-    console.log(errorData);
 
     // 在模块作用域内维护单例状态（通过闭包变量）
     if (typeof httpRequest.__isLoginInProgress === 'undefined') {
