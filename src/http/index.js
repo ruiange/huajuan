@@ -45,7 +45,6 @@ httpRequest.interceptors.request.use(
   }
 );
 
-
 httpRequest.interceptors.response.use(
   async (response) => {
     uni.hideLoading();
@@ -62,6 +61,10 @@ httpRequest.interceptors.response.use(
     // 401 自动登录与请求重放
     const statusCode = error?.statusCode ?? error?.data?.statusCode;
     const originalConfig = error?.config || {};
+    const { data: errorData } = error;
+
+    console.log('errorData');
+    console.log(errorData);
 
     // 在模块作用域内维护单例状态（通过闭包变量）
     if (typeof httpRequest.__isLoginInProgress === 'undefined') {
@@ -71,9 +74,10 @@ httpRequest.interceptors.response.use(
       httpRequest.__pending401Queue = [];
     }
 
-    if (statusCode === 401) {
+    if (statusCode === 401 && errorData.code === 4001) {
       const requestUrl = originalConfig?.url || '';
-      const isLoginApi = requestUrl.includes('/mini/login') || originalConfig?.header?.unauthenticatedLogin;
+      const isLoginApi =
+        requestUrl.includes('/mini/login') || originalConfig?.header?.unauthenticatedLogin;
 
       // 已重试过或为登录接口本身，直接抛出
       if (originalConfig?._retry || isLoginApi) {
@@ -98,10 +102,7 @@ httpRequest.interceptors.response.use(
             if (success) {
               // 登录成功，重放所有 401 请求
               queue.forEach((pending) => {
-                httpRequest
-                  .request(pending.config)
-                  .then(pending.resolve)
-                  .catch(pending.reject);
+                httpRequest.request(pending.config).then(pending.resolve).catch(pending.reject);
               });
             } else {
               // 登录失败，全部拒绝

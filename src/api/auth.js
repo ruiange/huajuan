@@ -9,6 +9,7 @@ export function loginAPI(data) {
     url: '/mini/login',
     method: 'post',
     data: data,
+    header: { unauthenticatedLogin: true }
   });
 }
 
