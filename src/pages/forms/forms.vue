@@ -294,4 +294,12 @@
     opacity: 0.6;
     pointer-events: none;
   }
+  .loading-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    .loading-img {
+      width: 80%;
+    }
+  }
 </style>

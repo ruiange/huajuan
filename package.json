@@ -33,7 +33,11 @@
     "build:mp-xhs": "uni build -p mp-xhs",
     "build:quickapp-webview": "uni build -p quickapp-webview",
     "build:quickapp-webview-huawei": "uni build -p quickapp-webview-huawei",
-    "build:quickapp-webview-union": "uni build -p quickapp-webview-union"
+    "build:quickapp-webview-union": "uni build -p quickapp-webview-union",
+    "build": "uni build -p mp-weixin --mode pro",
+    "upload": "node ./scripts/upload.js",
+    "生产构建": "npm run build && npm run upload",
+    "生产构建1": "npm run upload"
   },
   "dependencies": {
     "@dcloudio/uni-app": "3.0.0-4040520250104002",
@@ -66,7 +70,11 @@
     "@dcloudio/uni-stacktracey": "3.0.0-4040520250104002",
     "@dcloudio/vite-plugin-uni": "3.0.0-4040520250104002",
     "@vue/runtime-core": "^3.4.21",
+    "axios": "^1.11.0",
+    "dotenv": "^17.2.1",
+    "miniprogram-ci": "^2.1.14",
     "prettier": "^3.5.3",
+    "semver": "^7.7.2",
     "vite": "5.2.8"
   }
 }
