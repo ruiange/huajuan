@@ -78,7 +78,7 @@ httpRequest.interceptors.response.use(
 
 const loginLogic = async () => {
   const AuthStore = useAuthStore();
-  return await AuthStore.LOGIN();
+  return await AuthStore.LOGIN(); //true为登录成功，false为登录失败
 };
 
 export default httpRequest;
