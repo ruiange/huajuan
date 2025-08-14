@@ -33,15 +33,12 @@ const httpRequest = new Request({
 // 响应阶段的重放队列：在 401 登录中转时缓存待重放请求
 // 结构：Array<{ resolve: Function, reject: Function, config: any }>
 let requestList = [];
-// 请求阶段的等待队列：当检测到登录中时，后续请求在 request 拦截器中暂停，待登录完成后继续
-// 结构：Array<{ resolve: Function, reject: Function }>
+
 let loginWaiters = [];
 // 是否正在刷新 Token（当前未启用刷新逻辑，仅预留）
 let isRefreshToken = false;
 
-// 请求拦截器：在请求发出前统一处理
-// - 自动从本地获取 token 并注入到 Authorization 头
-// - 通过在调用处设置 `config.header.unauthenticatedLogin = true` 可跳过鉴权（如登录接口）
+
 httpRequest.interceptors.request.use(
   async (config) => {
     // 若正在登录中，则暂停后续非匿名请求，等待登录完成后再继续
@@ -60,7 +57,6 @@ httpRequest.interceptors.request.use(
     return config;
   },
   async (err) => {
-    // 请求在发出前的配置阶段即抛错（一般较少见）
     return Promise.reject(err);
   }
 );
@@ -88,8 +84,6 @@ httpRequest.interceptors.response.use(
     const statusCode = error?.statusCode ?? error?.data?.statusCode;
     console.log(statusCode, 'statusCode');
     try {
-      // 网络异常或非 2xx HTTP 状态码会进入此处
-      // 尽量从后端返回体中提取更友好的错误信息
       await uni.showToast({
         title: error.data?.messages || '错误请求',
         icon: 'none',
@@ -104,8 +98,8 @@ httpRequest.interceptors.response.use(
 
 const loginLogic = async () => {
   const AuthStore = useAuthStore();
-  return await AuthStore.LOGIN(); //ture 登录成功 false 登录失败
+  return await AuthStore.LOGIN();
 };
 
-// 导出统一的 http 实例，供业务模块按需导入使用
+
 export default httpRequest;
