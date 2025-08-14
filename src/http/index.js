@@ -30,24 +30,8 @@ const httpRequest = new Request({
   },
 });
 
-// 响应阶段的重放队列：在 401 登录中转时缓存待重放请求
-// 结构：Array<{ resolve: Function, reject: Function, config: any }>
-let requestList = [];
-
-let loginWaiters = [];
-// 是否正在刷新 Token（当前未启用刷新逻辑，仅预留）
-let isRefreshToken = false;
-
-
 httpRequest.interceptors.request.use(
   async (config) => {
-    // 若正在登录中，则暂停后续非匿名请求，等待登录完成后再继续
-    if (isRefreshToken && !config.header.unauthenticatedLogin) {
-      await new Promise((resolve, reject) => {
-        loginWaiters.push({ resolve, reject });
-      });
-    }
-
     // 从本地同步获取鉴权 Token
     const token = uni.getStorageSync('token');
     // 非匿名请求则在请求头中附加 Token（登录完成后会读取到最新 token）
@@ -61,11 +45,7 @@ httpRequest.interceptors.request.use(
   }
 );
 
-// 响应拦截器：在收到后端响应后统一处理
-// 约定：后端业务成功返回 code === 2000
-// - 自动隐藏 Loading
-// - 业务失败时弹出后端返回的 message
-// - 始终返回 response.data，便于调用方直接使用
+
 httpRequest.interceptors.response.use(
   async (response) => {
     uni.hideLoading();
@@ -100,6 +80,5 @@ const loginLogic = async () => {
   const AuthStore = useAuthStore();
   return await AuthStore.LOGIN();
 };
-
 
 export default httpRequest;
