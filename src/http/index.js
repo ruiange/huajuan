@@ -12,6 +12,7 @@
  * - VITE_APP_ENV: 运行环境标识（dev/test/prod 等）
  */
 import Request from 'luch-request';
+import { useAuthStore } from '../store/auth';
 
 // 后端基础地址（由 Vite 注入的环境变量）
 const BASE_API = import.meta.env.VITE_APP_API_URL;
@@ -29,8 +30,12 @@ const httpRequest = new Request({
   },
 });
 
-// 请求队列：可用于队列化请求或在刷新 Token 时缓存重放（当前未使用）
+// 响应阶段的重放队列：在 401 登录中转时缓存待重放请求
+// 结构：Array<{ resolve: Function, reject: Function, config: any }>
 let requestList = [];
+// 请求阶段的等待队列：当检测到登录中时，后续请求在 request 拦截器中暂停，待登录完成后继续
+// 结构：Array<{ resolve: Function, reject: Function }>
+let loginWaiters = [];
 // 是否正在刷新 Token（当前未启用刷新逻辑，仅预留）
 let isRefreshToken = false;
 
@@ -39,9 +44,16 @@ let isRefreshToken = false;
 // - 通过在调用处设置 `config.header.unauthenticatedLogin = true` 可跳过鉴权（如登录接口）
 httpRequest.interceptors.request.use(
   async (config) => {
+    // 若正在登录中，则暂停后续非匿名请求，等待登录完成后再继续
+    if (isRefreshToken && !config.header.unauthenticatedLogin) {
+      await new Promise((resolve, reject) => {
+        loginWaiters.push({ resolve, reject });
+      });
+    }
+
     // 从本地同步获取鉴权 Token
     const token = uni.getStorageSync('token');
-    // 非匿名请求则在请求头中附加 Token
+    // 非匿名请求则在请求头中附加 Token（登录完成后会读取到最新 token）
     if (token && !config.header.unauthenticatedLogin) {
       config.header.Authorization = token;
     }
@@ -71,15 +83,76 @@ httpRequest.interceptors.response.use(
     return response.data;
   },
   async (error) => {
-    console.log('错误请求==============')
+    console.log('错误请求==============');
     console.log(error);
-    const {statusCode} = error;
-    console.log(statusCode,'statusCode')
+    const statusCode = error?.statusCode ?? error?.data?.statusCode;
+    const originalConfig = error?.config || {};
+
+    // 401 处理：触发登录并在成功后重放请求
+    if (statusCode === 401) {
+      // 针对匿名/登录接口自身的 401，直接抛出，避免死循环
+      if (originalConfig?.header?.unauthenticatedLogin) {
+        return Promise.reject(error);
+      }
+      // 若已在登录/刷新中，则把当前请求加入队列，等待完成后重放
+      if (isRefreshToken) {
+        // 登录过程中：将当前请求加入待重放队列，并阻止继续发起
+        return new Promise((resolve, reject) => {
+          requestList.push({ resolve, reject, config: originalConfig });
+        });
+      }
+
+      // 首个 401 触发登录
+      isRefreshToken = true;
+      try {
+        const ok = await loginLogic();
+        if (!ok) {
+          // 登录失败：拒绝所有排队请求
+          requestList.forEach(({ reject }) => reject(new Error('登录失败')));
+          requestList = [];
+          throw error;
+        }
+
+        // 重放队列中的请求
+        const pending = requestList.slice();
+        requestList = [];
+        pending.forEach(({ resolve, reject, config }) => {
+          const retryConfig = { ...config };
+          retryConfig.header = retryConfig.header || {};
+          if (retryConfig._retried) {
+            return reject(new Error('重复重试已被阻止'));
+          }
+          retryConfig._retried = true;
+          httpRequest.request(retryConfig).then(resolve).catch(reject);
+        });
+
+        // 重试当前请求
+        const retryCurrent = { ...originalConfig };
+        retryCurrent.header = retryCurrent.header || {};
+        if (retryCurrent._retried) {
+          throw error;
+        }
+        retryCurrent._retried = true;
+        return httpRequest.request(retryCurrent);
+      } catch (loginErr) {
+        // 登录异常：拒绝所有排队请求并抛出
+        requestList.forEach(({ reject }) => reject(loginErr));
+        requestList = [];
+        throw loginErr;
+      } finally {
+        isRefreshToken = false;
+        // 唤醒在请求阶段因登录中被暂停的请求
+        loginWaiters.forEach(({ resolve }) => resolve());
+        loginWaiters = [];
+      }
+    }
+
+    console.log(statusCode, 'statusCode');
     try {
       // 网络异常或非 2xx HTTP 状态码会进入此处
       // 尽量从后端返回体中提取更友好的错误信息
       await uni.showToast({
-        title: error.data.messages || '错误请求1',
+        title: error.data?.messages || '错误请求',
         icon: 'none',
         duration: 4000,
       });
@@ -90,9 +163,10 @@ httpRequest.interceptors.response.use(
   }
 );
 
-const loginLogic = ()=>{
-  //用户自己实现，cursor不用实现
-}
+const loginLogic = async () => {
+  const AuthStore = useAuthStore();
+  return await AuthStore.LOGIN(); //ture 登录成功 false 登录失败
+};
 
 // 导出统一的 http 实例，供业务模块按需导入使用
 export default httpRequest;
