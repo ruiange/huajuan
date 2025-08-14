@@ -1,5 +1,5 @@
 <template>
-  <view class="form-container">
+  <view v-if="!loading" class="form-container">
     <view class="form-item">
       <text>游戏昵称</text>
       <input v-model="formData.game_nick_name" placeholder="请输入游戏昵称" />
@@ -40,6 +40,10 @@
       </view>
     </view>
   </view>
+
+  <view v-if="loading" :style="`width: 100%;height: ${windowHeight}px;`" class="loading-container">
+    <image class="loading-img" :src="loadingImg" mode="widthFix"></image>
+  </view>
 </template>
 
 <script setup>
@@ -50,7 +54,8 @@
     updateGameAccountAPI,
   } from '../../api/gameAccount';
   import { onLoad } from '@dcloudio/uni-app';
-
+  import loadingImg from '../../static/13395852403014388.gif';
+  const windowHeight = uni.getSystemInfoSync().windowHeight;
   const formData = ref({
     game_nick_name: '',
     game_AccountNumber: '',

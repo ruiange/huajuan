@@ -1,5 +1,5 @@
 <template>
-  <view class="list-container">
+  <view v-if="!loading" class="list-container">
     <view class="add-btn" @click="goAdd">添加账号</view>
     <view v-if="loading" class="loading">加载中...</view>
     <view v-else>
@@ -36,13 +36,17 @@
       </view>
     </view>
   </view>
+  <view v-if="loading" :style="`width: 100%;height: ${windowHeight}px;`" class="loading-container">
+    <image class="loading-img" :src="loadingImg" mode="widthFix"></image>
+  </view>
 </template>
 
 <script setup>
   import { onMounted, ref } from 'vue';
   import { getMyGameListAccountAPI, deleteGameAccountAPI } from '../../api/gameAccount';
   import { onShow } from '@dcloudio/uni-app';
-
+  import loadingImg from '../../static/13395852403014388.gif';
+  const windowHeight = uni.getSystemInfoSync().windowHeight;
   const accounts = ref([]);
   const loading = ref(true);
 
