@@ -59,18 +59,77 @@ httpRequest.interceptors.response.use(
     return response.data;
   },
   async (error) => {
-    console.log('错误请求==============');
-    console.log(error);
+    // 401 自动登录与请求重放
     const statusCode = error?.statusCode ?? error?.data?.statusCode;
-    console.log(statusCode, 'statusCode');
+    const originalConfig = error?.config || {};
+
+    // 在模块作用域内维护单例状态（通过闭包变量）
+    if (typeof httpRequest.__isLoginInProgress === 'undefined') {
+      httpRequest.__isLoginInProgress = false;
+    }
+    if (!httpRequest.__pending401Queue) {
+      httpRequest.__pending401Queue = [];
+    }
+
+    if (statusCode === 401) {
+      const requestUrl = originalConfig?.url || '';
+      const isLoginApi = requestUrl.includes('/mini/login') || originalConfig?.header?.unauthenticatedLogin;
+
+      // 已重试过或为登录接口本身，直接抛出
+      if (originalConfig?._retry || isLoginApi) {
+        return Promise.reject(error);
+      }
+
+      // 将当前请求加入等待队列，待登录完成后重放
+      const retryPromise = new Promise((resolve, reject) => {
+        httpRequest.__pending401Queue.push({
+          config: { ...originalConfig, _retry: true },
+          resolve,
+          reject,
+        });
+      });
+
+      // 触发单次登录流程
+      if (!httpRequest.__isLoginInProgress) {
+        httpRequest.__isLoginInProgress = true;
+        loginLogic()
+          .then((success) => {
+            const queue = httpRequest.__pending401Queue.splice(0);
+            if (success) {
+              // 登录成功，重放所有 401 请求
+              queue.forEach((pending) => {
+                httpRequest
+                  .request(pending.config)
+                  .then(pending.resolve)
+                  .catch(pending.reject);
+              });
+            } else {
+              // 登录失败，全部拒绝
+              queue.forEach((pending) => pending.reject(error));
+            }
+          })
+          .catch(() => {
+            const queue = httpRequest.__pending401Queue.splice(0);
+            queue.forEach((pending) => pending.reject(error));
+          })
+          .finally(() => {
+            httpRequest.__isLoginInProgress = false;
+          });
+      }
+
+      // 不提示 401 的默认错误 Toast，交给登录流程与重放处理
+      return retryPromise;
+    }
+
+    // 非 401 的错误统一提示
     try {
       await uni.showToast({
-        title: error.data?.messages || '错误请求',
+        title: error?.data?.messages || '错误请求',
         icon: 'none',
         duration: 4000,
       });
     } catch (e) {
-      console.log(e.message);
+      console.log(e?.message);
     }
     return Promise.reject(error);
   }
