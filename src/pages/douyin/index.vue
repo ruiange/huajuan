@@ -150,6 +150,7 @@
   @shadow-color: rgba(0, 0, 0, 0.08);
   @border-radius: 16rpx;
   @btn-height: 88rpx;
+  @btn-gradient: linear-gradient(to right, #d8d9ff, #e0e0fb, #f5ebf2, #fdeeec, #fdeeec);
 
   // 混入
   .card() {
@@ -240,7 +241,7 @@
 
     .url-input {
       width: 100%;
-      height: 250rpx;
+      height: 300rpx;
       background-color: #f5f7fa;
       border-radius: 12rpx;
       padding: 24rpx 30rpx;
@@ -279,10 +280,12 @@
 
     .btn-clipboard,
     .btn-analyze {
-      background-color: @primary-color;
+      background: @btn-gradient;
+      color: #333;
+      box-shadow: 0 0 10rpx 0 rgba(0, 0, 0, 0.1);
 
       &:active {
-        background-color: @primary-hover;
+        filter: brightness(0.98);
       }
     }
   }
@@ -298,12 +301,12 @@
       .button-base();
       width: 80%;
       line-height: @btn-height;
-      background: linear-gradient(135deg, @primary-color, @primary-hover);
-      box-shadow: 0 6rpx 16rpx rgba(@primary-color, 0.2);
+      background: @btn-gradient;
+      color: #333;
+      box-shadow: 0 0 10rpx 0 rgba(0, 0, 0, 0.1);
 
       &:active {
-        background: linear-gradient(135deg, @primary-hover, #3c4146);
-        box-shadow: 0 4rpx 8rpx rgba(@primary-color, 0.15);
+        filter: brightness(0.98);
       }
     }
   }
