@@ -86,67 +86,6 @@ httpRequest.interceptors.response.use(
     console.log('错误请求==============');
     console.log(error);
     const statusCode = error?.statusCode ?? error?.data?.statusCode;
-    const originalConfig = error?.config || {};
-
-    // 401 处理：触发登录并在成功后重放请求
-    if (statusCode === 401) {
-      // 针对匿名/登录接口自身的 401，直接抛出，避免死循环
-      if (originalConfig?.header?.unauthenticatedLogin) {
-        return Promise.reject(error);
-      }
-      // 若已在登录/刷新中，则把当前请求加入队列，等待完成后重放
-      if (isRefreshToken) {
-        // 登录过程中：将当前请求加入待重放队列，并阻止继续发起
-        return new Promise((resolve, reject) => {
-          requestList.push({ resolve, reject, config: originalConfig });
-        });
-      }
-
-      // 首个 401 触发登录
-      isRefreshToken = true;
-      try {
-        const ok = await loginLogic();
-        if (!ok) {
-          // 登录失败：拒绝所有排队请求
-          requestList.forEach(({ reject }) => reject(new Error('登录失败')));
-          requestList = [];
-          throw error;
-        }
-
-        // 重放队列中的请求
-        const pending = requestList.slice();
-        requestList = [];
-        pending.forEach(({ resolve, reject, config }) => {
-          const retryConfig = { ...config };
-          retryConfig.header = retryConfig.header || {};
-          if (retryConfig._retried) {
-            return reject(new Error('重复重试已被阻止'));
-          }
-          retryConfig._retried = true;
-          httpRequest.request(retryConfig).then(resolve).catch(reject);
-        });
-
-        // 重试当前请求
-        const retryCurrent = { ...originalConfig };
-        retryCurrent.header = retryCurrent.header || {};
-        if (retryCurrent._retried) {
-          throw error;
-        }
-        retryCurrent._retried = true;
-        return httpRequest.request(retryCurrent);
-      } catch (loginErr) {
-        // 登录异常：拒绝所有排队请求并抛出
-        requestList.forEach(({ reject }) => reject(loginErr));
-        requestList = [];
-        throw loginErr;
-      } finally {
-        isRefreshToken = false;
-        // 唤醒在请求阶段因登录中被暂停的请求
-        loginWaiters.forEach(({ resolve }) => resolve());
-        loginWaiters = [];
-      }
-    }
-
     console.log(statusCode, 'statusCode');
     try {
       // 网络异常或非 2xx HTTP 状态码会进入此处

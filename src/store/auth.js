@@ -48,6 +48,7 @@ export const useAuthStore = defineStore('auth', {
       const { code } = await uni.login();
       console.log(code,'code=========')
       const { data, code: resCode } = await loginAPI({ code });
+      console.log(resCode,'rescode===========')
       if (resCode === 2000) {
         uni.setStorageSync('token', data.token);
         uni.setStorageSync('userInfo', data.userInfo);
