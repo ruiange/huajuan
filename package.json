@@ -36,8 +36,7 @@
     "build:quickapp-webview-union": "uni build -p quickapp-webview-union",
     "build": "uni build -p mp-weixin --mode pro",
     "upload": "node ./scripts/upload.js",
-    "生产构建": "npm run build && npm run upload",
-    "生产构建1": "npm run upload"
+    "生产构建": "npm run build && npm run upload"
   },
   "dependencies": {
     "@dcloudio/uni-app": "3.0.0-4040520250104002",
