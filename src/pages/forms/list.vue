@@ -164,6 +164,7 @@
     box-shadow: 0 0 10rpx 0 rgba(0, 0, 0, 0.1);
     margin-bottom: 20px;
     cursor: pointer;
+    font-weight: bold;
   }
   .empty-img {
     width: 120px;

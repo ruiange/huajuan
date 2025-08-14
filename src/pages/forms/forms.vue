@@ -25,7 +25,13 @@
       <switch :checked="formData.is_default" @change="onDefaultChange" />
     </view>
 
-    <view class="sub-btn" :class="{ disabled: loading }" :disabled="loading" @click="handleSubmit">{{ loading ? '加载中...' : '提交' }}</view>
+    <view
+      class="sub-btn"
+      :class="{ disabled: loading }"
+      :disabled="loading"
+      @click="handleSubmit"
+      >{{ loading ? '加载中...' : '提交' }}</view
+    >
 
     <!-- 成功提示弹窗 -->
     <view v-if="showSuccessModal" class="modal-overlay">
@@ -66,6 +72,7 @@
 
   const showSuccessModal = ref(false);
   const loading = ref(false);
+  const formLoading = ref(false);
 
   const closeSuccessModal = () => {
     showSuccessModal.value = false;
@@ -113,7 +120,8 @@
     }
   };
   const postForm = async (params) => {
-    loading.value = true;
+    if(formLoading.value) return;
+    formLoading.value = true;
     try {
       await uni.showLoading({
         title: '加载中',
@@ -124,7 +132,7 @@
         showSuccessModal.value = true;
       }
     } finally {
-      loading.value = false;
+      formLoading.value = false;
       uni.hideLoading();
     }
   };
@@ -140,7 +148,9 @@
   };
 
   const putForm = async (params) => {
-    loading.value = true;
+    if(formLoading.value) return;
+
+    formLoading.value = true;
     try {
       await uni.showLoading({
         title: '加载中',
@@ -151,7 +161,7 @@
         showSuccessModal.value = true;
       }
     } finally {
-      loading.value = false;
+      formLoading.value = false;
       uni.hideLoading();
     }
   };

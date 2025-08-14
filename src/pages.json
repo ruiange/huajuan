@@ -3,7 +3,7 @@
     {
       "path": "pages/douyin/index",
       "style": {
-        "navigationBarTitleText": "视频解析",
+        "navigationBarTitleText": "",
         "enablePullDownRefresh": false
       }
     },
