@@ -26,7 +26,7 @@
           </view>
           <view class="card-row">
             <text class="label">游戏区服：</text>
-            <text class="value">{{ item.game_address }}</text>
+            <text class="value">{{ item.game_server }}</text>
           </view>
           <view class="card-row">
             <text class="label">贴吧昵称：</text>

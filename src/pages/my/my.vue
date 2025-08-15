@@ -34,7 +34,7 @@
 </template>
 
 <script setup>
-  import { onLoad, onShow } from '@dcloudio/uni-app';
+  import { onLoad, onShareAppMessage, onShow } from '@dcloudio/uni-app';
   import { useAuthStore } from '../../store/auth';
   import { computed, ref, watch } from 'vue';
   import { getUserInfoAPI } from '../../api/user';
@@ -73,6 +73,12 @@
     RandomAvatar.value = generateRandomAvatar();
   });
   const days = ref(0);
+  onShareAppMessage(() => {
+    return {
+      title: '就是你的江湖',
+      path: '/pages/my/my',
+    };
+  });
 </script>
 
 <style scoped lang="less">
