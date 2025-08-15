@@ -14,6 +14,10 @@
       <text>游戏区服</text>
       <input v-model="formData.game_address" placeholder="请输入游戏区服" />
     </view>
+    
+    <view class="form-item">
+      <text>游戏区服二</text>
+    </view>
 
     <view class="form-item">
       <text>贴吧昵称</text>
@@ -61,6 +65,7 @@
   } from '../../api/gameAccount';
   import { onLoad } from '@dcloudio/uni-app';
   import loadingImg from '../../static/13395852403014388.gif';
+  import { getGameServerListApi } from '../../api/jiuYin';
   const windowHeight = uni.getSystemInfoSync().windowHeight;
   const formData = ref({
     game_nick_name: '',
@@ -171,6 +176,7 @@
       id.value = options.id;
       getGameAccount(id.value);
     }
+    getGameServerList()
   });
   const getGameAccount = async (id) => {
     loading.value = true;
@@ -189,6 +195,12 @@
   const onDefaultChange = (e) => {
     formData.value.is_default = e.detail.value;
   };
+  const serverList =ref([])
+  const getGameServerList = async () =>{
+   const {data} =  await getGameServerListApi()
+    serverList.value = data
+    console.log(serverList.value)
+  }
 </script>
 
 <style scoped lang="less">

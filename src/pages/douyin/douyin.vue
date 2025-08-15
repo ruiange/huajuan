@@ -126,6 +126,7 @@
   const loading = ref(false);
 
   const windowHeight = uni.getSystemInfoSync().windowHeight;
+  
   onLoad((options) => {
     if ('pageType' in options) {
       pageType.value = options.pageType;
