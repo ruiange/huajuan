@@ -268,7 +268,8 @@
     await uni.showLoading({
       title: '下载中...',
     });
-
+    console.log('下载地址====================')
+    console.log(videoUrl.value);
     try {
       uni.downloadFile({
         url: videoUrl.value,
